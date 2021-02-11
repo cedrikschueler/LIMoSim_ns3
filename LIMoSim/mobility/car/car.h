@@ -68,7 +68,8 @@ public:
     void initialize();
     void handleEvent(Event *_event);
     void move(double _timeDelta_s);
-
+    Vector3d getWaypoint();
+    double getMaxSpeed() {return m_maxSpeed_mps;}
 private:
     void updateAcceleration();
     void updateTravelledDistance(double _timeDelta_s);

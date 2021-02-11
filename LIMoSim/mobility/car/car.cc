@@ -137,6 +137,13 @@ void Car::move(double _timeDelta_s)
     updateIntersectionAwareness();
 }
 
+Vector3d Car::getWaypoint(){
+    // Get current segment
+    LaneSegment *segment = m_roadPosition.laneSegment;
+    // Return Endnode of segment as appraoched waypoint
+    return segment->getEndNode()->getPosition();
+}
+
 
 /*************************************
  *           PRIVATE METHODS         *
