@@ -28,6 +28,7 @@ protected:
     void handleEvent(Event *_event);
     void move(double _timeDelta_s);
     Vector3d getWaypoint();
+    double getMaxSpeed() {return getModel()->getLocomotion()->getVelocityMax();}
 
 private:
     Vector3d m_initialPosition;
