@@ -15,7 +15,8 @@ Vehicle::Vehicle(const std::string &_id, const std::string &_type) :
     m_updateTimer(nullptr),
     m_updateInterval_s(0.01),
     m_mobilityModel(nullptr),
-    moveSpeedUp(1)
+    moveSpeedUp(1),
+    m_positionHistorySize(15)
 {
 
     m_mobilityDataExporter = new MobilityDataExporter(this, 0.1);
@@ -86,6 +87,10 @@ Vector3d Vehicle::getPosition()
     return m_position;
 }
 
+std::deque<std::pair<double, Vector3d>> Vehicle::getPositionHistory(){
+    return m_positionHistory;
+}
+
 Orientation3d Vehicle::getOrientation()
 {
     return m_orientation;
@@ -133,6 +138,9 @@ void Vehicle::handleMoveEvent(Event *_event)
     move(timeDelta_s * moveSpeedUp);
     m_lastUpdate_s = _event->getTimestamp();
 
+    m_positionHistory.push_back(std::make_pair(m_lastUpdate_s, this->getPosition()));
+    if (m_positionHistory.size() > m_positionHistorySize)
+        m_positionHistory.pop_front();
     //
     scheduleEvent(_event, m_updateInterval_s);
 }

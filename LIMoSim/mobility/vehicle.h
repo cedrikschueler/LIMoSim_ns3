@@ -1,6 +1,8 @@
 #ifndef LIMOSIM_VEHICLE_H
 #define LIMOSIM_VEHICLE_H
 
+#include <deque>
+
 #include "mobilitymodel.h"
 #include "LIMoSim/simulation/eventhandler.h"
 #include "LIMoSim/world/vector3d.h"
@@ -27,6 +29,7 @@ public:
     std::string getType();
     Vector3d getAcceleration();
     Vector3d getPosition();
+    std::deque<std::pair<double, Vector3d>> getPositionHistory();
     Orientation3d getOrientation();
     Vector3d getVelocity();
     Orientation3d getOrientationVelocity();
@@ -41,6 +44,7 @@ protected:
     void handleEvent(Event *_event);
     void handleMoveEvent(Event *_event);
     virtual void move(double _timeDelta_s) = 0;
+    virtual Vector3d getWaypoint() = 0;
 
     void setModel(MobilityModel *_mobilityModel);
 
@@ -62,6 +66,9 @@ protected:
     MobilityModel* m_mobilityModel;
 
     double moveSpeedUp;
+
+    std::deque<std::pair<double, Vector3d>> m_positionHistory;
+    uint m_positionHistorySize;
 };
 
 }

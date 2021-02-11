@@ -65,6 +65,10 @@ void UAV::move(double _timeDelta_s)
     setOrientationVelocity(update.orientationVelocity);
 }
 
+Vector3d UAV::getWaypoint(){
+    getModel()->getWaypoint();
+}
+
 
 /*************************************
  *          PRIVATE METHODS          *
