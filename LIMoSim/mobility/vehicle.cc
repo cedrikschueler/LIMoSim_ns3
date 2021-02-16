@@ -10,9 +10,10 @@ namespace LIMoSim {
 Vehicle::Vehicle(const std::string &_id, const std::string &_type)
     : EventHandler(), m_id(_id), m_type(_type), m_lastUpdate_s(0),
       m_updateTimer(nullptr), m_updateInterval_s(0.01),
-      m_mobilityModel(nullptr), moveSpeedUp(1), m_positionHistorySize(15) {
-
-  m_mobilityDataExporter = new MobilityDataExporter(this, 0.1);
+      m_mobilityModel(nullptr), moveSpeedUp(1), m_positionHistorySize(15)
+{
+    if (s_enableMobilityExport)
+        m_mobilityDataExporter = new MobilityDataExporter(this, 0.1);
 }
 
 Vehicle::~Vehicle() {
@@ -175,7 +176,8 @@ LocalVehicleManager *Vehicle::getLocalVehicleManager() {
 void Vehicle::initialize() {
   m_updateTimer = new Event(m_updateInterval_s, this, "Move");
   scheduleEvent(m_updateTimer);
-  m_mobilityDataExporter->start();
+  if (s_enableMobilityExport)
+    m_mobilityDataExporter->start();
 }
 
 void Vehicle::handleEvent(Event *_event) {

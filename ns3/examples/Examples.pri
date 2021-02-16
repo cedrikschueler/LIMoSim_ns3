@@ -17,6 +17,7 @@ include (./lte-aerial-basestation-cluster/LteAerialBasestationCluster.pri)
 include (./wave-follower/WaveFollower.pri)
 include (./wifi-reach-mobile/WifiReachMobile.pri)
 include (./wifi-reach-static/WifiReachStatic.pri)
+include (./parrot-aerial-basestation/ParrotAerialBasestation.pri)
 
 equals(ns3, mmw) {
     message("including ns3 mmwave examples in sources")

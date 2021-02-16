@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/behavior_cohesionarea.h \
     $$PWD/reynoldsmodel.h \
     $$PWD/behavior.h \
     $$PWD/behavior_seek.h \
@@ -36,6 +37,7 @@ HEADERS += \
     $$PWD/behavior_waypointroute.h
 
 SOURCES += \
+    $$PWD/behavior_cohesionarea.cpp \
     $$PWD/reynoldsmodel.cc \
     $$PWD/behavior_seek.cc \
     $$PWD/uav_locomotion.cc \

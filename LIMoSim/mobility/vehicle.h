@@ -74,6 +74,7 @@ protected:
 
   std::deque<std::pair<double, Vector3d>> m_positionHistory;
   uint m_positionHistorySize;
+  constexpr static bool s_enableMobilityExport = false;
 };
 
 } // namespace LIMoSim

@@ -10,6 +10,7 @@
 #include "lte-follower/ltefollower.h"
 #include "lte-static-follower/ltestaticfollower.h"
 #include "lte-aerial-basestation-cluster/lteaerialbasestationcluster.h"
+#include "parrot-aerial-basestation/parrotaerialbasestation.h"
 
 #include "standalone/scenarioregistry.h"
 
@@ -378,6 +379,7 @@ void loadScenarioRegistry()
     registry->registerScenario("lteFollower", [](){Examples::LteFollower::setup();});
     registry->registerScenario("lteStaticFollower", [](){Examples::LteStaticFollower::setup();});
     registry->registerScenario("waveFollower", [](){Examples::WaveFollower::setup();});
+    registry->registerScenario("parrotAerialBaseStation", [](){Examples::ParrotAerialBasestation::setup();});
 }
 void printAvailableScenarios() {
     std::cout << "List of available standalone scenarios:\n";
