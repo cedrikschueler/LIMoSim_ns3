@@ -26,7 +26,8 @@ namespace LIMoSim
             SECONDARY,
             TERTIARY,
             RESIDENTIAL,
-            SERVICE
+            SERVICE,
+            RACEWAY
         };
     }
 

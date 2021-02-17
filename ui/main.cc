@@ -82,8 +82,10 @@ int main(int argc, char *argv[])
     maps["tudo1"] = "TUDO-larger.osm";
     maps["do-city"] = "City.osm";
     maps["do-sw"] = "dortmund_south_west.osm";
+    maps["grand-prix"] = "grand-prix-nuerburg-ring.osm";
+    maps["grand-prix-small"] = "grand-prix-nuerburg-ring-small.osm";
 
-    world->loadMap(maps.at("tudo"));
+    world->loadMap(maps.at("grand-prix-small"));
 
     std::cout << "init intersections" << std::endl;
     world->filterNodes();

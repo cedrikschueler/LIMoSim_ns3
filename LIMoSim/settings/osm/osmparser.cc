@@ -96,6 +96,7 @@ void OSMParser::parseWay(DOMElement *_way)
     roadTypes["secondary"] = ROAD_TYPE::SECONDARY;
     roadTypes["tertiary"] = ROAD_TYPE::TERTIARY;
     roadTypes["residential"] = ROAD_TYPE::RESIDENTIAL;
+    roadTypes["raceway"] = ROAD_TYPE::RACEWAY;
     //roadTypes["service"] = ROAD_TYPE::SERVICE;
 
     //
