@@ -9,11 +9,11 @@ USER = $$system("echo $USER")
 #NS_BUILD_DIR = /home/$$USER/dev/ns3-install-workspace/ns-allinone-3.28/ns-3.28/build
 #NS_LIB_DIR =
 #NS_LTE_BUILD_DIR = /home/$$USER/dev/ns3-install-workspace/ns-allinone-3.28/ns-3.28/build
-NS_LTE_BUILD_DIR = /home/$$USER/dev/ns3-install-workspace/ns-allinone-3.28.1/ns-3.28.1/build
+NS_LTE_BUILD_DIR = /home/$$USER/ns3_PARRoT/ns-3-dev-git/build
 NS_MMW_BUILD_DIR = /home/$$USER/dev/ns3-install-workspace/ns3-mmwave/build
 NS_V2X_BUILD_DIR = /home/$$USER/dev/ns3-install-workspace/ns-3-docker/ns-3/ns-3-dev-git/build
 
-NS_LIB_DIR =
+NS_LIB_DIR = lib
 
 # default ns3 (lte without mmw)
 NS_BUILD_DIR = $$NS_LTE_BUILD_DIR
@@ -45,8 +45,8 @@ unix {
         CLEARNAME = $$replace(CLEARNAME,.so,)
         LIBS += -l$$CLEARNAME
     }
-#    message("include path: $$INCLUDEPATH")
-#    message("libs: $$LIBS")
+    #message("include path: $$INCLUDEPATH")
+    #message("libs: $$LIBS")
 }
 win32 {
     warning("no libs were added for ns3.")
