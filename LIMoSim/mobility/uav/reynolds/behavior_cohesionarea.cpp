@@ -4,10 +4,11 @@
 
 namespace LIMoSim {
 
-Behavior_CohesionArea::Behavior_CohesionArea(AreaLimits areaLimits,
+Behavior_CohesionArea::Behavior_CohesionArea(AreaLimits areaLimits, double height,
                                              std::string _agentId):
     Behavior("CohesionArea", _agentId),
-    m_areaDefinitions(areaLimits)
+    m_areaDefinitions(areaLimits),
+    m_height(height)
 {
 }
 
@@ -26,6 +27,7 @@ Steering Behavior_CohesionArea::apply()
     }
 
     meanPosition = meanPosition / (double)carsInArea.size();
+    meanPosition.z = m_height;
 
     Behavior* arrive = new Behavior_Arrive(meanPosition, m_agentId);
     Steering steering = makeSelfAligned(arrive,m_agentId)->apply();

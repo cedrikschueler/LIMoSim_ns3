@@ -19,7 +19,7 @@ struct RectArea {
 class Behavior_CohesionArea: public Behavior
 {
 public:    
-    Behavior_CohesionArea(AreaLimits areaLimits,
+    Behavior_CohesionArea(AreaLimits areaLimits, double height=30.0,
                           std::string _agentId = "");
 
     // Behavior interface
@@ -29,6 +29,7 @@ protected:
     virtual std::vector<Vehicle*> findAgentsInArea();
 
     AreaLimits m_areaDefinitions;
+    double m_height;
 };
 
 
