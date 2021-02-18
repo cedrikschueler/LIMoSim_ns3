@@ -91,9 +91,11 @@ RoutingProtocol::forecastPosition ()
           std::deque<Vector3D> historyData = hist_coord;
 
           std::deque<Vector3D> plannedWaypoints; // = mob->gcWP (5); // Try to get some Waypoints
-          if (mobility->GetObject<ControlledRandomWaypointMobilityModel>()){
-            plannedWaypoints = mobility->GetObject<ControlledRandomWaypointMobilityModel>()->gcWP(5);
-          }
+          if (mobility->GetObject<ControlledRandomWaypointMobilityModel> ())
+            {
+              plannedWaypoints =
+                  mobility->GetObject<ControlledRandomWaypointMobilityModel> ()->gcWP (5);
+            }
 
           if (hist_coord.size () > 0)
             {
@@ -135,6 +137,12 @@ RoutingProtocol::forecastPosition ()
             {
               return Vector3D (0, 0, 0);
             }
+        }
+      else if (predictionMethod == "limosim")
+        {
+          Ptr<LIMoSim::NS3::LimoSimMobilityModel> lm =  ns3::DynamicCast<LIMoSim::NS3::LimoSimMobilityModel>(mobility);
+          LIMoSim::Vehicle* veh = lm->GetVehicle();
+          return LIMoSim::NS3::toNS3Vector(veh->getPredictedPosition(m_NeighborReliabilityTimeout.GetSeconds()));
         }
       else
         {

@@ -21,6 +21,7 @@ public:
     void setAccelerationMax(double _accMax);
     void setBehavior(Behavior* _behavior);
     void setVelocityMax(double _velMax);
+    Vector3d getPredictedPosition(double _timeDelta_s) override;
 
 protected:
 
@@ -28,6 +29,9 @@ protected:
     void handleEvent(Event *_event);
     void move(double _timeDelta_s);
     Vector3d getWaypoint();
+
+    Vector3d predictWithTarget(Vector3d _currentData, int m_updateInterval_ms, Vector3d wp0);
+    Vector3d predictWithHistory(std::deque<std::pair<double, Vector3d>> _historyData, int _nextTime_ms);
     double getMaxSpeed() {return getModel()->getLocomotion()->getVelocityMax();}
 
 private:

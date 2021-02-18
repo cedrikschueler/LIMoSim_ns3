@@ -68,8 +68,14 @@ public:
     void initialize();
     void handleEvent(Event *_event);
     void move(double _timeDelta_s);
-    Vector3d getWaypoint();
-//    double getMaxSpeed() {return m_maxSpeed_mps;}
+    Vector3d getPredictedPosition(double _time_Delta_s) override;
+    virtual Vector3d getWaypoint();
+
+    virtual Vector3d predictWithTarget(Vector3d _currentData, int m_updateInterval_ms,
+                               Vector3d wp0);
+    virtual Vector3d
+    predictWithHistory(std::deque<std::pair<double, Vector3d>> _historyData,
+                       int _nextTime_ms);
 private:
     void updateAcceleration();
     void updateTravelledDistance(double _timeDelta_s);

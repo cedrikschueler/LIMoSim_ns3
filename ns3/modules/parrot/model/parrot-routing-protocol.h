@@ -41,6 +41,8 @@
 #include "ns3/ipv4-l3-protocol.h"
 #include "ns3/mobility-model.h"
 #include "ns3/controlled-random-waypoint-mobility-model.h"
+#include "ns3/limosimmobilitymodel.h"
+#include "LIMoSim/mobility/vehicle.h"
 
 #include "ns3/timer.h"
 
@@ -52,7 +54,6 @@
 
 namespace ns3 {
 namespace parrot {
-
 /**
  * \ingroup parrot
  * \brief PARRoT routing protocol.
