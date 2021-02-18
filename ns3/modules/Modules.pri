@@ -4,3 +4,4 @@ equals(ns3, mmw) {
 }
 include (deterministic-obstacle-shadowing/DeterministicObstacleShadowing.pri)
 include (./net-stats/NetStats.pri)
+include (./parrot/Parrot.pri)
