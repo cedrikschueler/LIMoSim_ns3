@@ -191,7 +191,7 @@ Vector3d Car::predictWithTarget(Vector3d _currentData,
   // compute the next position
   Vector3d position = _currentData;
   Vector3d target = wp0;
-  double m_maxSpeed_mpMs = getMaxSpeed();
+  double m_maxSpeed_mpMs = getMaxSpeed()/1000;
 
   nextData =
       position + (target - position) / ((target - position).norm() *
