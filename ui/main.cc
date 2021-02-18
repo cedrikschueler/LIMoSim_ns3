@@ -80,12 +80,13 @@ int main(int argc, char *argv[])
     maps["map1"] = "map1.limo";
     maps["tudo"] = "TUDO.osm";
     maps["tudo1"] = "TUDO-larger.osm";
+    maps["tudo2"] = "TUDO-smaller.osm";
     maps["do-city"] = "City.osm";
     maps["do-sw"] = "dortmund_south_west.osm";
     maps["grand-prix"] = "grand-prix-nuerburg-ring.osm";
     maps["grand-prix-small"] = "grand-prix-nuerburg-ring-small.osm";
 
-    world->loadMap(maps.at("grand-prix-small"));
+    world->loadMap(maps.at("tudo2"));
 
     std::cout << "init intersections" << std::endl;
     world->filterNodes();
