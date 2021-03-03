@@ -66,7 +66,6 @@ void UAV::move(double _timeDelta_s)
 }
 
 Vector3d UAV::getWaypoint(){
-    auto model = getModel();
     getModel()->getWaypoint();
 }
 
@@ -83,7 +82,7 @@ Vector3d UAV::getPredictedPosition(double _timeDelta_s) {
       std::vector<Vector3d> historyData = m_positionHistory;
       std::vector<double> historyDataTimes = m_positionHistoryTimes;
 
-      Vector3d nextTarget = getWaypoint();
+      Vector3d nextTarget = Vector3d(0,0,0);
       bool hasWaypoint = false;
 
       int time_ms =

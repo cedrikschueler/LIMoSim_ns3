@@ -1,3 +1,4 @@
+
 #include "parrotaerialbasestation.h"
 
 #include <iostream>
@@ -13,7 +14,6 @@
 #include <ns3/mobility-module.h>
 #include <ns3/network-module.h>
 #include <ns3/olsr-module.h>
-#include <ns3/parrot-module.h>
 #include <ns3/yans-wifi-helper.h>
 
 #include "LIMoSim/mobility/uav/reynolds/behavior_cohesionarea.h"
@@ -26,6 +26,7 @@
 #include "ui/uimanagerservice.h"
 
 #include "ns3/ns3setuphelpers.h"
+#include "ns3/modules/parrot/helper/parrot-helper.h"
 
 #define PORT 9
 namespace LIMoSim {
@@ -78,7 +79,7 @@ void parseQCmdLine(uint &numUavs, uint &numCars, std::string &scenarioName,
   scenarioName = parser.isSet(scenarioNameOption)
                      ? parser.value(scenarioNameOption).toStdString()
                      : "";
-  ok=true;
+  ok = true;
   if (!ok) {
     std::cout << "Scenarios::Standalone::scenarios::AerialBaseStation: setting "
                  "scenarioName fallback value: "
@@ -182,13 +183,23 @@ struct PARRoTSettings {
   double ChirpInterval = 0.5;
   double NeighborReliabilityTimeout = 2.0;
   int MaxHops = 32;
-  double LearningRate = 0.5;
+  double LearningRate = 0.4;
   double DiscountFactor = 0.7;
   std::string CombinationMethod = "M";
   int HistorySize = 5;
   std::string PredictionMethod = "limosim";
   double RangeOffset = -12.5;
 };
+
+void ReceivePacket(Ptr<Socket> socket) {
+  Ptr<Packet> packet;
+  Address senderAddress;
+  while ((packet = socket->RecvFrom(senderAddress))) {
+    //      bytesTotal += packet->GetSize ();
+    //      packetsReceived += 1;
+    //      NS_LOG_UNCOND (PrintReceivedPacket (socket, packet, senderAddress));
+  }
+}
 
 void setup(uint8_t _run) {
   using namespace ns3;
@@ -203,6 +214,7 @@ void setup(uint8_t _run) {
   parseQCmdLine(numUavs, numCars, m_CSVfileName, m_protocol, m_seed);
   std::string scenarioName = m_CSVfileName;
   RngSeedManager::SetSeed(m_seed);
+  srand(m_seed);
 
   std::cout << "starting scenario " << scenarioName << " "
             << std::to_string(numUavs) << " uavs"
@@ -231,7 +243,7 @@ void setup(uint8_t _run) {
    *
    *
    */
-  double TotalTime = 900.0;
+  double TotalTime = 20.0;
   std::string rate("2Mbps");
   std::string tr_name = m_CSVfileName;
   std::string m_protocolName = "protocol";
@@ -268,6 +280,10 @@ void setup(uint8_t _run) {
 
   // Create merged NodeContainer
   NodeContainer adhocNodes(uavNodes, carNodes);
+//   int NUM_WIFI_CARS = 10;
+//   for (int i = 0; i < NUM_WIFI_CARS; i++){
+//       adhocNodes.Add(carNodes.Get(i));
+//   }
   NetDeviceContainer adhocDevices = wifi.Install(wifiPhy, wifiMac, adhocNodes);
 
   AodvHelper aodv;
@@ -279,7 +295,7 @@ void setup(uint8_t _run) {
   DsrMainHelper dsrMain;
   Ipv4ListRoutingHelper list;
   InternetStackHelper internet;
- std::cout << "WiFi ok" << std::endl;
+  std::cout << "WiFi ok" << std::endl;
   switch (m_protocol) {
   case 1:
     // Configure OLSR according to PARRoT v1 Paper
@@ -319,7 +335,8 @@ void setup(uint8_t _run) {
     parrot.Set("PredictionMethod",
                StringValue(m_parrotSettings.PredictionMethod));
     parrot.Set("RangeOffset", DoubleValue(m_parrotSettings.RangeOffset));
-    std::cout << "Prediction method: " << m_parrotSettings.PredictionMethod << "\n";
+    std::cout << "Prediction method: " << m_parrotSettings.PredictionMethod
+              << "\n";
     list.Add(parrot, 100);
     m_protocolName = "PARRoT";
     break;
@@ -357,33 +374,33 @@ void setup(uint8_t _run) {
    *
    */
 
-//   for (int i = 0; i < m_nSinks; i++) {
-//     TypeId tid = TypeId::LookupByName("ns3::UdpSocketFactory");
-//     Ptr<Socket> sink = Socket::CreateSocket(adhocNodes.Get(i), tid);
-//     InetSocketAddress local =
-//         InetSocketAddress(adhocInterfaces.GetAddress(i), PORT);
-//     sink->Bind(local);
-//     //   sink->SetRecvCallback (MakeCallback (&ReceivePacket, this));
-//     AddressValue remoteAddress(
-//         InetSocketAddress(adhocInterfaces.GetAddress(i), PORT));
-//     onoff1.SetAttribute("Remote", remoteAddress);
+  for (int i = 10; i < 11; i++) {
+     TypeId tid = TypeId::LookupByName("ns3::UdpSocketFactory");
+     Ptr<Socket> sink = Socket::CreateSocket(adhocNodes.Get(i), tid);
+     InetSocketAddress local =
+         InetSocketAddress(adhocInterfaces.GetAddress(i), PORT);
+     sink->Bind(local);
+     sink->SetRecvCallback(MakeCallback(&ReceivePacket));
+     AddressValue remoteAddress(
+         InetSocketAddress(adhocInterfaces.GetAddress(i), PORT));
+     onoff1.SetAttribute("Remote", remoteAddress);
 
-//     Ptr<UniformRandomVariable> var = CreateObject<UniformRandomVariable>();
-//     ApplicationContainer temp = onoff1.Install(adhocNodes.Get(i + m_nSinks));
-//     temp.Start(Seconds(5.0));
-//     temp.Stop(Seconds(TotalTime));
-//   }
+     Ptr<UniformRandomVariable> var = CreateObject<UniformRandomVariable>();
+     ApplicationContainer temp = onoff1.Install(adhocNodes.Get(i + m_nSinks));
+     temp.Start(Seconds(5.0));
+     temp.Stop(Seconds(TotalTime));
+  }
 
-//   Ptr<FlowMonitor> flowmon;
-//   FlowMonitorHelper flowmonHelper;
-//   flowmon = flowmonHelper.InstallAll();
+  Ptr<FlowMonitor> flowmon;
+  FlowMonitorHelper flowmonHelper;
+  flowmon = flowmonHelper.InstallAll();
 
   Simulator::Stop(Seconds(TotalTime));
   ui::UiManagerService::getInstance()->setUiDataInitialized(true);
   LIMoSim::Simulation::getInstance()->run();
-//   flowmon->SerializeToXmlFile((tr_name + ".flowmon").c_str(), false, false);
+  flowmon->SerializeToXmlFile((tr_name + ".flowmon").c_str(), false, false);
 
-//   Simulator::Destroy();
+  //   Simulator::Destroy();
 }
 
 } // namespace ParrotAerialBasestation
