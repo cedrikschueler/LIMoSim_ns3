@@ -137,12 +137,11 @@ RoutingProtocol::forecastPosition ()
             {
               return Vector3D (0, 0, 0);
             }
-        }else if (predictionMethod == "limosim")
-{
-Ptr<LIMoSim::NS3::LimoSimMobilityModel> lm =  ns3::DynamicCast<LIMoSim::NS3::LimoSimMobilityModel>(mobility);
-LIMoSim::Vehicle* veh = lm->GetVehicle();
-        return LIMoSim::NS3::toNS3Vector(veh->getPredictedPosition(m_neighborReliabilityTimeout.GetSeconds()));
-      }
+        }else if (predictionMethod == "limosim"){
+          Ptr<LIMoSim::NS3::LimoSimMobilityModel> lm =  ns3::DynamicCast<LIMoSim::NS3::LimoSimMobilityModel>(mobility);
+          LIMoSim::Vehicle* veh = lm->GetVehicle();
+          return LIMoSim::NS3::toNS3Vector(veh->getPredictedPosition(m_neighborReliabilityTimeout.GetSeconds()));
+        }
       else
         {
           throw;
