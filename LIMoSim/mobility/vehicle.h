@@ -1,7 +1,7 @@
 #ifndef LIMOSIM_VEHICLE_H
 #define LIMOSIM_VEHICLE_H
 
-#include <deque>
+#include <queue>
 #include <math.h>
 
 #include "mobilitymodel.h"
@@ -33,7 +33,7 @@ public:
     Vector3d getAcceleration();
     Vector3d getPosition();
     virtual Vector3d getPredictedPosition(double _time_Delta_s) = 0;
-    std::deque<std::pair<double, Vector3d>> getPositionHistory();
+    std::vector<Vector3d> getPositionHistory();
     Orientation3d getOrientation();
     Vector3d getVelocity();
     Orientation3d getOrientationVelocity();
@@ -69,7 +69,8 @@ protected:
     MobilityModel* m_mobilityModel;
 
     double moveSpeedUp;
-    std::deque<std::pair<double, Vector3d>> m_positionHistory;
+    std::vector<Vector3d> m_positionHistory;
+    std::vector<double> m_positionHistoryTimes;
     uint m_positionHistorySize;
 };
 

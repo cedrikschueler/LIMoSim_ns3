@@ -74,8 +74,8 @@ public:
     virtual Vector3d predictWithTarget(Vector3d _currentData, int m_updateInterval_ms,
                                Vector3d wp0);
     virtual Vector3d
-    predictWithHistory(std::deque<std::pair<double, Vector3d>> _historyData,
-                       int _nextTime_ms);
+    predictWithHistory(
+        std::vector<Vector3d> _historyData, std::vector<double> _historyDataTimes,int _nextTime_ms);
 private:
     void updateAcceleration();
     void updateTravelledDistance(double _timeDelta_s);

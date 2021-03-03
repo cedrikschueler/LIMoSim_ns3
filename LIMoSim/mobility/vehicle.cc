@@ -16,7 +16,7 @@ Vehicle::Vehicle(const std::string &_id, const std::string &_type) :
     m_updateInterval_s(0.01),
     m_mobilityModel(nullptr),
     moveSpeedUp(1),
-    m_positionHistorySize(15)
+    m_positionHistorySize(50)
 {
 
     m_mobilityDataExporter = new MobilityDataExporter(this, 0.1);
@@ -87,7 +87,7 @@ Vector3d Vehicle::getPosition()
     return m_position;
 }
 
-std::deque<std::pair<double, Vector3d>> Vehicle::getPositionHistory() {
+std::vector<Vector3d> Vehicle::getPositionHistory() {
   return m_positionHistory;
 }
 
@@ -137,11 +137,16 @@ void Vehicle::handleMoveEvent(Event *_event)
     double timeDelta_s = _event->getTimestamp() - m_lastUpdate_s;
     move(timeDelta_s * moveSpeedUp);
     m_lastUpdate_s = _event->getTimestamp();
-
-    m_positionHistory.push_back(
-        std::make_pair(m_lastUpdate_s, this->getPosition()));
+    Vector3d currentPosition = this->getPosition();
+    m_positionHistoryTimes.push_back(m_lastUpdate_s);
+    m_positionHistory.push_back(Vector3d(m_position.x, m_position.y, m_position.z));
     if (m_positionHistory.size() > m_positionHistorySize)
-      m_positionHistory.pop_front();
+    {
+        m_positionHistory.erase(m_positionHistory.begin());
+        m_positionHistoryTimes.erase(m_positionHistoryTimes.begin());
+//       std::cout << currentPosition.x << " " << currentPosition.y << "\n";
+    }
+
     //
     scheduleEvent(_event, m_updateInterval_s);
 }

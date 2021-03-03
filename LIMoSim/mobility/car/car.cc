@@ -146,22 +146,23 @@ Vector3d Car::getWaypoint(){
 
 Vector3d Car::getPredictedPosition(double _timeDelta_s) {
   if (_timeDelta_s <= 0) {
-    return (m_positionHistory.size() > 0) ? m_positionHistory.back().second
+    return (m_positionHistory.size() > 0) ? m_positionHistory.back()
                                           : Vector3d(0, 0, 0);
   }
   if (m_positionHistory.size() > 0) {
     double m_updateInterval_ms = m_updateInterval_s * 1000;
-    double _currentTime_ms = m_positionHistory.back().first * 1000;
+    double _currentTime_ms = m_positionHistoryTimes.back() * 1000;
 
-    std::deque<Vector3d> predictedData;
-    std::deque<std::pair<double, Vector3d>> historyData = m_positionHistory;
+    std::vector<Vector3d> predictedData;
+    std::vector<Vector3d> historyData = m_positionHistory;
+    std::vector<double> historyDataTimes = m_positionHistoryTimes;
 
     Vector3d nextTarget = getWaypoint();
     bool hasWaypoint = true;
 
     int time_ms =
         (int)floor(_currentTime_ms / m_updateInterval_ms) * m_updateInterval_ms;
-    Vector3d lastValidData = m_positionHistory.back().second;
+    Vector3d lastValidData = m_positionHistory.back();
     Vector3d currentData = lastValidData;
     for (int i = 0; i < (int)floor(_timeDelta_s / m_updateInterval_s); i++) {
       time_ms += m_updateInterval_ms;
@@ -172,11 +173,14 @@ Vector3d Car::getPredictedPosition(double _timeDelta_s) {
           hasWaypoint = false;
         }
       } else {
-        currentData = predictWithHistory(historyData, time_ms);
+        currentData = predictWithHistory(historyData, historyDataTimes,time_ms);
       }
       predictedData.push_back(currentData);
-      historyData.push_back(std::make_pair(time_ms, currentData));
-      historyData.pop_front();
+      historyData.push_back(currentData);
+      historyData.erase(historyData.begin());
+
+      historyDataTimes.push_back(time_ms/1000.0);
+      historyDataTimes.erase(historyDataTimes.begin());
     }
     return predictedData[predictedData.size () - 1];
   } else {
@@ -201,25 +205,26 @@ Vector3d Car::predictWithTarget(Vector3d _currentData,
 }
 
 Vector3d Car::predictWithHistory(
-    std::deque<std::pair<double, Vector3d>> _historyData, int _nextTime_ms) {
-  std::deque<std::pair<double, Vector3d>> historyData = _historyData;
+    std::vector<Vector3d> _historyData, std::vector<double> _historyDataTimes,int _nextTime_ms) {
+  std::vector<Vector3d> historyData = _historyData;
+  std::vector<double> historyDataTimes = _historyDataTimes;
   if (historyData.size() == 1) {
-    Vector3d nextData = historyData.at(historyData.size() - 1).second;
+    Vector3d nextData = historyData.at(historyData.size() - 1);
     return nextData;
   } else {
-    Vector3d lastValidData = _historyData.at(historyData.size() - 1).second;
+    Vector3d lastValidData = _historyData.at(historyData.size() - 1);
 
     // compute the position increment
     Vector3d positionIncrement;
     float totalWeight = 0;
     for (int unsigned i = 1; i < _historyData.size(); i++) {
-      Vector3d currentData = _historyData.at(i).second;
-      Vector3d lastData = _historyData.at(i - 1).second;
+      Vector3d currentData = _historyData.at(i);
+      Vector3d lastData = _historyData.at(i - 1);
 
       float weight = 1;
       Vector3d increment =
           (currentData - lastData) * weight /
-          (_historyData.at(i).first - _historyData.at(i - 1).first);
+          (_historyDataTimes.at(i) - _historyDataTimes.at(i - 1));
 
       positionIncrement = increment + positionIncrement;
       totalWeight += weight;
@@ -230,8 +235,8 @@ Vector3d Car::predictWithHistory(
     // _nextTime_ms/1000 [s] - historyData.first [s])
     Vector3d nextData =
         lastValidData +
-        positionIncrement * (_nextTime_ms / 1000 -
-                             _historyData.at(historyData.size() - 1).first);
+        positionIncrement * (_nextTime_ms / 1000.0 -
+                             _historyDataTimes.at(historyData.size() - 1));
     return nextData;
   }
 }
