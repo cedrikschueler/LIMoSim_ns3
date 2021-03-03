@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     maps["grand-prix"] = "grand-prix-nuerburg-ring.osm";
     maps["grand-prix-small"] = "grand-prix-nuerburg-ring-small.osm";
 
-    world->loadMap(maps.at("tudo2"));
+    world->loadMap(maps.at("tudo"));
 
     std::cout << "init intersections" << std::endl;
     world->filterNodes();
